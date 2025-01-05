@@ -1,10 +1,12 @@
 import sys
 import pandas as pd
 import os
+# Import model from components_file path
 from src.exception import CustomException
 from src.utils import load_object
 
 
+# Configuration of class prediction
 class PredictPipeline:
     def __init__(self):
         pass
@@ -26,6 +28,7 @@ class PredictPipeline:
 
 
 
+## Prediction pipeline pre-processing 
 class CustomData:
     def __init__(  self,
         gender: str,
@@ -35,7 +38,8 @@ class CustomData:
         test_preparation_course: str,
         reading_score: int,
         writing_score: int):
-
+        
+        ### All features of data_model
         self.gender = gender
 
         self.race_ethnicity = race_ethnicity
@@ -52,6 +56,7 @@ class CustomData:
 
     def get_data_as_data_frame(self):
         try:
+            # custom data_input dictionary
             custom_data_input_dict = {
                 "gender": [self.gender],
                 "race_ethnicity": [self.race_ethnicity],
@@ -61,7 +66,8 @@ class CustomData:
                 "reading_score": [self.reading_score],
                 "writing_score": [self.writing_score],
             }
-
+            
+            # return custom data_iput_dictionary
             return pd.DataFrame(custom_data_input_dict)
 
         except Exception as e:
