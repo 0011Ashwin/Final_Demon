@@ -14,6 +14,7 @@ import os
 
 from src.utils import save_object
 
+## Data class ingestion process 
 @dataclass
 class DataTransformationConfig:
     preprocessor_obj_file_path=os.path.join('artifacts',"proprocessor.pkl")
@@ -114,11 +115,13 @@ class DataTransformation:
                 obj=preprocessing_obj
 
             )
-
+            
+            ## Returning the tuple of containing the training array , testing array and the file path processor obejct 
             return (
-                train_arr,
-                test_arr,
+                train_arr, # The array containing the training
+                test_arr,  # The array containing the testing
                 self.data_transformation_config.preprocessor_obj_file_path,
             )
         except Exception as e:
+            # Reaturning the custom raise 
             raise CustomException(e,sys)

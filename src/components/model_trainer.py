@@ -1,7 +1,7 @@
 import os
 import sys
 from dataclasses import dataclass
-
+## Applying the all alogrithm for better accuracy in model_training 
 from catboost import CatBoostRegressor
 from sklearn.ensemble import (
     AdaBoostRegressor,
@@ -14,9 +14,11 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
 
+## Importing the other model from src/components/
 from src.exception import CustomException
 from src.logger import logging
 
+## Make the save point for object_saving in model_training
 from src.utils import save_object,evaluate_models
 
 @dataclass
@@ -30,6 +32,7 @@ class ModelTrainer:
 
     def initiate_model_trainer(self,train_array,test_array):
         try:
+            ## Spliting the train and test
             logging.info("Split training and test input data")
             X_train,y_train,X_test,y_test=(
                 train_array[:,:-1],
@@ -37,6 +40,7 @@ class ModelTrainer:
                 test_array[:,:-1],
                 test_array[:,-1]
             )
+            ## Models used 
             models = {
                 "Random Forest": RandomForestRegressor(),
                 "Decision Tree": DecisionTreeRegressor(),
@@ -46,6 +50,7 @@ class ModelTrainer:
                 "CatBoosting Regressor": CatBoostRegressor(verbose=False),
                 "AdaBoost Regressor": AdaBoostRegressor(),
             }
+            ## Parameters defined and used in the model definition.
             # params={
             #     "Decision Tree": {
             #         'criterion':['squared_error', 'friedman_mse', 'absolute_error', 'poisson'],
@@ -96,18 +101,22 @@ class ModelTrainer:
                 list(model_report.values()).index(best_model_score)
             ]
             best_model = models[best_model_name]
-
+            
+            # Giving the best model score......
             if best_model_score<0.6:
                 raise CustomException("No best model found")
             logging.info(f"Best found model on both training and testing dataset")
-
+            
+            ## Save_object
             save_object(
                 file_path=self.model_trainer_config.trained_model_file_path,
                 obj=best_model
             )
-
+            
+            # Model_score_report 
             predicted=best_model.predict(X_test)
-
+            
+            # Model_r2_score
             r2_square = r2_score(y_test, predicted)
             return r2_square
             
@@ -116,4 +125,5 @@ class ModelTrainer:
 
             
         except Exception as e:
+            # Return CustomException
             raise CustomException(e,sys)
